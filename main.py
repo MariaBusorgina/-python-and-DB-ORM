@@ -1,8 +1,8 @@
 import sqlalchemy as sq
 from sqlalchemy.orm import sessionmaker
 
-from model import create_table, Publisher, Book
-
+from utilities import find_shop
+from model import Publisher, Book, Shop, Stock, create_table
 
 DSN = "postgresql://postgres:5240@localhost:5432/client"
 engine = sq.create_engine(DSN)
@@ -25,27 +25,37 @@ book_2_author2 = Book(book_title="Первая книга автора 2", publi
 book_1_author3 = Book(book_title="Первая книга автора 3", publisher=author3)
 book_2_author3 = Book(book_title="Первая книга автора 3", publisher=author3)
 
+shop_1 = Shop(name="Первый книжный")
+shop_2 = Shop(name="Второй книжный")
+shop_3 = Shop(name="Третий книжный")
+
+stock1 = Stock(count=1, book=book_1_author1, shop=shop_3)
+stock2 = Stock(count=1, book=book_2_author1, shop=shop_3)
+stock3 = Stock(count=1, book=book_1_author2, shop=shop_2)
+stock4 = Stock(count=1, book=book_2_author2, shop=shop_2)
+stock5 = Stock(count=1, book=book_1_author2, shop=shop_1)
+stock6 = Stock(count=1, book=book_2_author2, shop=shop_1)
+stock7 = Stock(count=1, book=book_1_author3, shop=shop_1)
+stock8 = Stock(count=1, book=book_2_author3, shop=shop_1)
+
 session.add_all([
-    author1,
-    author2,
-    author3,
-    book_1_author1,
-    book_2_author1,
-    book_1_author2,
-    book_2_author2,
-    book_1_author3,
-    book_2_author3
+    author1, author2, author3,
+    book_1_author1, book_2_author1,
+    book_1_author2, book_2_author2,
+    book_1_author3, book_2_author3,
+    shop_1, shop_2, shop_3,
+    stock1, stock2, stock3,
+    stock4, stock5, stock6,
+    stock7, stock8
 ])
 session.commit()
 
-searchParams = input("Если хотите найти автора по имени введите 1,"
-                     " если хотите найти автора по номеру введите 2: ")
-
-if (searchParams == "1"):
-    name = input("Введите имя: ")
-    print(session.query(Publisher).filter(Publisher.name_publisher == name).all())
-else:
-    id = input("Введите номер: ")
-    print(session.query(Publisher).filter(Publisher.id_publisher == id).all())
+find_shop(session, client_name="Author_1")
 
 session.close()
+
+
+
+
+
+
